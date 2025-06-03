@@ -1,8 +1,5 @@
 flask
 requests
-openai
 gunicorn
-transformers
-torch
 google-generativeai
 python-dotenv
