@@ -1,5 +1,6 @@
 from flask import Flask, request, render_template
 import requests
+import os
 
 app = Flask(__name__)
 
@@ -10,7 +11,12 @@ def index():
         text = request.form["text"]
         response = requests.post(
             "https://api-inference.huggingface.co/models/facebook/bart-large-cnn",
-            headers={"Authorization": "Bearer YOUR_HUGGINGFACE_API_KEY"},
+            headers=headers,
+            json={"inputs": text}
+        )
+            headers = {
+                "Authorization": f"Bearer {os.getenv('HUGGINGFACE_API_KEY')}"
+            }
             json={"inputs": text}
         )
         summary = response.json()[0]["summary_text"]
