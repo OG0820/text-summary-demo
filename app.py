@@ -4,7 +4,7 @@ import os
 
 app = Flask(__name__)
 
-API_URL = "https://api-inference.huggingface.co/models/csebuetnlp/mT5-multilingual-XLSum"
+API_URL = "https://api-inference.huggingface.co/models/uer/mt5-small-chinese-cluecorpussmall-summarization"
 HEADERS = {
     "Authorization": f"Bearer {os.getenv('HUGGINGFACE_API_KEY')}"
 }
@@ -14,7 +14,7 @@ def index():
     summary = ""
     if request.method == "POST":
         text = request.form["text"]
-        prompt = f"請以繁體中文與英文各寫一句話摘要下文：{text}"
+        prompt = f"請摘要以下內容：{text}"
         response = requests.post(API_URL, headers=HEADERS, json={"inputs": prompt})
         try:
             summary = response.json()[0]["summary_text"]
