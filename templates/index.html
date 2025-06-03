@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head><title>文章摘要系統</title></head>
+<body>
+  <h1>文章摘要系統</h1>
+  <form method="post">
+    <textarea name="text" rows="10" cols="60" placeholder="請輸入文章內容"></textarea><br>
+    <button type="submit">產生摘要</button>
+  </form>
+  {% if summary %}
+  <h2>摘要結果：</h2>
+  <p>{{ summary }}</p>
+  {% endif %}
+</body>
+</html>
