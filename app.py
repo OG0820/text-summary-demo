@@ -1,37 +1,22 @@
 from flask import Flask, request, render_template
-import requests
-import os
+from transformers import pipeline
 
 app = Flask(__name__)
-API_URL = "https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent"
+
+summarizer = pipeline("summarization", model="sshleifer/distilbart-cnn-12-6")
 
 @app.route("/", methods=["GET", "POST"])
 def index():
     summary = ""
     if request.method == "POST":
         text = request.form["text"]
-        prompt = f"請使用繁體中文與英文各寫一句話摘要下列內容：\n{text}"
-
-        API_KEY = os.getenv("GEMINI_API_KEY")
-        headers = {
-            "Content-Type": "application/json",
-            "x-goog-api-key": API_KEY
-        }
-
-        payload = {
-            "contents": [
-                {
-                    "parts": [{"text": prompt}]
-                }
-            ]
-        }
 
         try:
-            response = requests.post(API_URL, headers=headers, json=payload)
-            result = response.json()
-            summary = result["candidates"][0]["content"]["parts"][0]["text"]
+            result = summarizer(text, max_length=100, min_length=20, do_sample=False)
+            summary = result[0]["summary_text"]
         except Exception as e:
-            summary = f"發生錯誤：{str(e)}\n狀態碼：{response.status_code} \n回應：{response.text}"
+            summary = f"發生錯誤：{str(e)}"
+
     return render_template("index.html", summary=summary)
 
 if __name__ == "__main__":
