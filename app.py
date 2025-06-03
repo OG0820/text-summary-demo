@@ -27,10 +27,11 @@ def index():
 
         try:
             response = requests.post(API_URL, json=payload)
+            print("Raw Response:", response.text)
             result = response.json()
             summary = result["candidates"][0]["content"]["parts"][0]["text"]
         except Exception as e:
-            summary = f"發生錯誤：{str(e)}\n回應：{response.text}"
+            summary = f"發生錯誤：{str(e)}\n實際回應：{response.text}"
     return render_template("index.html", summary=summary)
 
 if __name__ == "__main__":
