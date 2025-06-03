@@ -4,11 +4,12 @@ import os
 
 app = Flask(__name__)
 
-# 使用你的 Gemini API 金鑰
 API_KEY = os.getenv("GEMINI_API_KEY")
-
-# Gemini API endpoint（Text-only model）
-API_URL = f"https://generativelanguage.googleapis.com/v1beta1/models/gemini-pro:generateContent?key={API_KEY}"
+API_URL = "https://generativelanguage.googleapis.com/v1beta1/models/gemini-pro:generateContent"
+HEADERS = {
+    "Content-Type": "application/json",
+    "x-goog-api-key": API_KEY
+}
 
 @app.route("/", methods=["GET", "POST"])
 def index():
@@ -16,7 +17,6 @@ def index():
     if request.method == "POST":
         text = request.form["text"]
         prompt = f"請使用繁體中文與英文各寫一句話摘要下列內容：\n{text}"
-
         payload = {
             "contents": [
                 {
@@ -24,10 +24,9 @@ def index():
                 }
             ]
         }
-        print("API_KEY =", API_KEY)
+
         try:
-            response = requests.post(API_URL, json=payload)
-            print("Raw Response:", response.text)
+            response = requests.post(API_URL, headers=HEADERS, json=payload)
             result = response.json()
             summary = result["candidates"][0]["content"]["parts"][0]["text"]
         except Exception as e:
