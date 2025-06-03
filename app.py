@@ -4,20 +4,22 @@ import os
 
 app = Flask(__name__)
 
+API_URL = "https://api-inference.huggingface.co/models/csebuetnlp/mT5-multilingual-XLSum"
+HEADERS = {
+    "Authorization": f"Bearer {os.getenv('HUGGINGFACE_API_KEY')}"
+}
+
 @app.route("/", methods=["GET", "POST"])
 def index():
     summary = ""
     if request.method == "POST":
         text = request.form["text"]
-        headers = {
-            "Authorization": f"Bearer {os.getenv('HUGGINGFACE_API_KEY')}"
-        }
-        response = requests.post(
-            "https://api-inference.huggingface.co/models/facebook/bart-large-cnn",
-            headers=headers,
-            json={"inputs": text}
-        )
-        summary = response.json()[0]["summary_text"]
+        prompt = f"請以繁體中文與英文各寫一句話摘要下文：{text}"
+        response = requests.post(API_URL, headers=HEADERS, json={"inputs": prompt})
+        try:
+            summary = response.json()[0]["summary_text"]
+        except Exception as e:
+            summary = f"發生錯誤：{str(e)}\n原始回應：{response.text}"
     return render_template("index.html", summary=summary)
 
 if __name__ == "__main__":
