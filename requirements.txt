@@ -1,4 +1,4 @@
 flask
 requests
 openai
-os
+gunicorn
