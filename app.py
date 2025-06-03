@@ -3,7 +3,7 @@ import requests
 import os
 
 app = Flask(__name__)
-API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent"
+API_URL = "https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent"
 
 @app.route("/", methods=["GET", "POST"])
 def index():
