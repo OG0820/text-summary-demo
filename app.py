@@ -9,14 +9,12 @@ def index():
     summary = ""
     if request.method == "POST":
         text = request.form["text"]
+        headers = {
+            "Authorization": f"Bearer {os.getenv('HUGGINGFACE_API_KEY')}"
+        }
         response = requests.post(
             "https://api-inference.huggingface.co/models/facebook/bart-large-cnn",
             headers=headers,
-            json={"inputs": text}
-        )
-            headers = {
-                "Authorization": f"Bearer {os.getenv('HUGGINGFACE_API_KEY')}"
-            }
             json={"inputs": text}
         )
         summary = response.json()[0]["summary_text"]
