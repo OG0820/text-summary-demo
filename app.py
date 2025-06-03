@@ -15,7 +15,7 @@ def index():
         text = request.form["text"]
         prompt = f"請用繁體中文與英文摘要以下內容：\n{text}"
         try:
-            model = genai.GenerativeModel("gemini-pro")  
+            model = genai.GenerativeModel("gemini-2.0-flash-001")  
             response = model.generate_content(prompt)
             summary = response.text
         except Exception as e:
