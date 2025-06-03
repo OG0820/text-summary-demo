@@ -8,7 +8,7 @@ app = Flask(__name__)
 API_KEY = os.getenv("GEMINI_API_KEY")
 
 # Gemini API endpoint（Text-only model）
-API_URL = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key={API_KEY}"
+API_URL = f"https://generativelanguage.googleapis.com/v1beta1/models/gemini-pro:generateContent?key={API_KEY}"
 
 @app.route("/", methods=["GET", "POST"])
 def index():
