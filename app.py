@@ -24,7 +24,7 @@ def index():
                 }
             ]
         }
-
+        print("API_KEY =", API_KEY)
         try:
             response = requests.post(API_URL, json=payload)
             print("Raw Response:", response.text)
