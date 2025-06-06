@@ -13,7 +13,7 @@ def index():
     if request.method == "POST":
         text = request.form["text"]
         original_paragraphs = [p.strip() for p in text.split("\n") if p.strip()]
-        prompt = f"{text}\n\n請將上述內容直接摘要為繁體中文，只給我摘要本身，無需任何說明、標題或多餘話語。"
+        prompt = f"{text}\n\n請將上述內容摘要，輸出為繁體中文，只給我文章摘要內容，無需任何說明、標題或多餘話語。"
         try:
             model = genai.GenerativeModel("gemini-2.0-flash-001")
             response = model.generate_content(prompt)
