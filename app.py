@@ -1,9 +1,7 @@
 import os
 from flask import Flask, request, render_template
-from dotenv import load_dotenv
 import google.generativeai as genai
 
-load_dotenv()
 genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 
 app = Flask(__name__)
@@ -25,4 +23,5 @@ def index():
     return render_template("index.html", summary=summary, original_paragraphs=original_paragraphs)
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=10000)
+    port = int(os.environ.get("PORT", 10000))  
+    app.run(host="0.0.0.0", port=port)
