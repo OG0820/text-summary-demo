@@ -44,17 +44,17 @@
       flex: 1;
     }
 
-    .summary-col p {
+    .summary-col .paragraph-block {
       background: #f1f1f1;
       padding: 12px;
       border-radius: 6px;
-      margin-bottom: 10px;
+      margin-bottom: 20px;
     }
 
-    .summary-col .ref-link {
+    .ref-link {
       display: block;
       font-size: 13px;
-      margin-top: 5px;
+      margin-top: 8px;
       color: #007BFF;
       cursor: pointer;
       text-decoration: underline;
@@ -84,12 +84,12 @@
       <div class="row">
         <div class="summary-col">
           <h3>摘要內容</h3>
-          {% for sent in summary.replace('\n', '').split('。') %}
-            {% if sent.strip() %}
-              <p>
-                {{ sent }}。
+          {% for para in summary.split('\n') %}
+            {% if para.strip() %}
+              <div class="paragraph-block">
+                {{ para }}
                 <span class="ref-link" onclick="showReference({{ loop.index0 }})">對照原文</span>
-              </p>
+              </div>
             {% endif %}
           {% endfor %}
         </div>
@@ -97,7 +97,7 @@
         <div class="reference-col">
           <h3>對應原文</h3>
           <div class="reference-box" id="reference-box">
-            <div id="reference-content">請點選左側任一句摘要以查看原文段落。</div>
+            <div id="reference-content">點選左側任一段摘要以查看對應原文。</div>
           </div>
         </div>
       </div>
@@ -106,14 +106,14 @@
   </div>
 
   <script>
-    const originalParagraphs = {{ original_paragraphs|tojson }};
+    const originalParagraphs = {{ original_paragraphs | tojson }};
     const refContent = document.getElementById("reference-content");
 
     function showReference(index) {
       if (originalParagraphs.length > index) {
         refContent.textContent = originalParagraphs[index];
       } else {
-        refContent.textContent = "⚠找不到對應原文。";
+        refContent.textContent = "找不到對應原文。";
       }
     }
 
