@@ -13,11 +13,11 @@ def index():
     summary = ""
     if request.method == "POST":
         text = request.form["text"]
-        prompt = f"請用繁體中文與英文摘要以下內容：\n{text}"
+        prompt = f"{text}\n\n請將上述內容直接摘要為繁體中文，只給我摘要本身，不需要任何解釋、標題或說明文字。"
         try:
-            model = genai.GenerativeModel("gemini-2.0-flash-001")  
+            model = genai.GenerativeModel("gemini-2.0-flash-001")
             response = model.generate_content(prompt)
-            summary = response.text
+            summary = response.text  
         except Exception as e:
             summary = f"發生錯誤：{str(e)}"
     return render_template("index.html", summary=summary)
