@@ -4,112 +4,95 @@
   <meta charset="UTF-8">
   <title>文章摘要系統</title>
   <style>
-    * { box-sizing: border-box; }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
     body {
       margin: 0;
       padding: 0;
       font-family: "Segoe UI", sans-serif;
       background-color: #f8f8f8;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      min-height: 100vh;
     }
 
     .container {
-      width: 90%;
-      max-width: 1000px;
-      padding: 30px;
+      max-width: 960px;
       margin: 40px auto;
+      background: #fff;
+      padding: 30px;
       border-radius: 10px;
-      background-color: #ffffff;
       box-shadow: 0 0 15px rgba(0,0,0,0.1);
     }
 
     textarea {
       width: 100%;
       min-height: 200px;
-      padding: 12px;
       font-size: 16px;
-      border-radius: 6px;
+      padding: 12px;
       border: 1px solid #ccc;
+      border-radius: 6px;
       resize: none;
-      margin-bottom: 10px;
       overflow: hidden;
+      margin-bottom: 20px;
     }
 
     button {
+      display: block;
+      margin: 0 auto 30px;
       padding: 10px 25px;
       font-size: 16px;
-      margin-bottom: 20px;
       cursor: pointer;
     }
 
-    .output {
-      display: flex;
-      gap: 20px;
-    }
-
-    .summary {
-      flex: 1;
-    }
-
-    .summary p {
+    .summary-block p {
       background-color: #f0f0f0;
-      padding: 10px;
+      padding: 12px;
       border-radius: 6px;
+      margin-bottom: 12px;
+      position: relative;
+    }
+
+    .summary-block button {
+      position: absolute;
+      right: 10px;
+      bottom: 10px;
+      font-size: 12px;
+      padding: 3px 8px;
       cursor: pointer;
-      transition: background 0.2s;
     }
 
-    .summary p:hover {
-      background-color: #e0e0e0;
-    }
-
-    .reference {
-      flex: 1;
-      background-color: #f9f9f9;
+    .reference-box {
+      margin-top: 30px;
       border-left: 4px solid #007BFF;
-      padding: 12px 15px;
+      background: #f9f9f9;
+      padding: 15px;
       border-radius: 6px;
-      min-height: 150px;
     }
 
-    .reference h3 {
-      margin-top: 0;
-    }
-
-    .hidden {
-      display: none;
+    .reference-box h4 {
+      margin: 0 0 8px;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>文章摘要系統</h1>
+    <h2>文章摘要系統</h2>
     <form method="post">
       <textarea name="text" placeholder="請輸入文章內容">{{ request.form.text }}</textarea>
       <button type="submit">產生摘要</button>
 
       {% if summary %}
-      <div class="output">
-        <div class="summary">
-          <h3>摘要：</h3>
-          {% for para in summary.split("\n") %}
-            {% if para.strip() %}
-              <p onclick="showReference({{ loop.index0 }})">{{ para }}</p>
-            {% endif %}
-          {% endfor %}
-        </div>
-        <div class="reference" id="reference-box">
-          <h3>對應原文段落</h3>
-          <div id="reference-content">請點選左側摘要段落查看原文。</div>
-        </div>
+      <h3>摘要：</h3>
+      <div class="summary-block">
+        {% for para in summary.split('\n') %}
+          {% if para.strip() %}
+          <p>
+            {{ para }}
+            <button type="button" onclick="showReference({{ loop.index0 }})"> 對照原文</button>
+          </p>
+          {% endif %}
+        {% endfor %}
+      </div>
+
+      <div class="reference-box" id="reference-box">
+        <h4>對應原文段落</h4>
+        <div id="reference-content">請點選上方「 對照原文」查看來源。</div>
       </div>
       {% endif %}
     </form>
@@ -117,18 +100,16 @@
 
   <script>
     const references = {{ original_paragraphs|tojson }};
-    const box = document.getElementById("reference-box");
-    const content = document.getElementById("reference-content");
+    const contentBox = document.getElementById("reference-content");
 
     function showReference(index) {
       if (references.length > index) {
-        content.textContent = references[index];
+        contentBox.textContent = references[index];
       } else {
-        content.textContent = "找不到對應的原文段落。";
+        contentBox.textContent = "找不到對應的原文段落。";
       }
     }
 
-    // 自動調整 textarea 高度
     const textarea = document.querySelector("textarea");
     textarea.addEventListener("input", () => {
       textarea.style.height = "auto";
