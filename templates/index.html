@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>文章摘要系統</title>
   <style>
+    * { box-sizing: border-box; }
+
     body {
       margin: 0;
       padding: 0;
@@ -12,7 +14,8 @@
     }
 
     .container {
-      max-width: 960px;
+      width: 95%;
+      max-width: 1200px;
       margin: 40px auto;
       background: #fff;
       padding: 30px;
@@ -32,41 +35,41 @@
       margin-bottom: 20px;
     }
 
-    button {
-      display: block;
-      margin: 0 auto 30px;
-      padding: 10px 25px;
-      font-size: 16px;
-      cursor: pointer;
+    .row {
+      display: flex;
+      gap: 30px;
     }
 
-    .summary-block p {
-      background-color: #f0f0f0;
+    .summary-col, .reference-col {
+      flex: 1;
+    }
+
+    .summary-col p {
+      background: #f1f1f1;
       padding: 12px;
       border-radius: 6px;
-      margin-bottom: 12px;
-      position: relative;
+      margin-bottom: 10px;
     }
 
-    .summary-block button {
-      position: absolute;
-      right: 10px;
-      bottom: 10px;
-      font-size: 12px;
-      padding: 3px 8px;
+    .summary-col .ref-link {
+      display: block;
+      font-size: 13px;
+      margin-top: 5px;
+      color: #007BFF;
       cursor: pointer;
+      text-decoration: underline;
     }
 
     .reference-box {
-      margin-top: 30px;
-      border-left: 4px solid #007BFF;
       background: #f9f9f9;
+      border-left: 4px solid #007BFF;
       padding: 15px;
       border-radius: 6px;
+      min-height: 150px;
     }
 
-    .reference-box h4 {
-      margin: 0 0 8px;
+    .reference-box h3 {
+      margin-top: 0;
     }
   </style>
 </head>
@@ -78,38 +81,43 @@
       <button type="submit">產生摘要</button>
 
       {% if summary %}
-      <h3>摘要：</h3>
-      <div class="summary-block">
-        {% for para in summary.split('\n') %}
-          {% if para.strip() %}
-          <p>
-            {{ para }}
-            <button type="button" onclick="showReference({{ loop.index0 }})"> 對照原文</button>
-          </p>
-          {% endif %}
-        {% endfor %}
-      </div>
+      <div class="row">
+        <div class="summary-col">
+          <h3>摘要內容</h3>
+          {% for sent in summary.replace('\n', '').split('。') %}
+            {% if sent.strip() %}
+              <p>
+                {{ sent }}。
+                <span class="ref-link" onclick="showReference({{ loop.index0 }})">對照原文</span>
+              </p>
+            {% endif %}
+          {% endfor %}
+        </div>
 
-      <div class="reference-box" id="reference-box">
-        <h4>對應原文段落</h4>
-        <div id="reference-content">請點選上方「 對照原文」查看來源。</div>
+        <div class="reference-col">
+          <h3>對應原文</h3>
+          <div class="reference-box" id="reference-box">
+            <div id="reference-content">請點選左側任一句摘要以查看原文段落。</div>
+          </div>
+        </div>
       </div>
       {% endif %}
     </form>
   </div>
 
   <script>
-    const references = {{ original_paragraphs|tojson }};
-    const contentBox = document.getElementById("reference-content");
+    const originalParagraphs = {{ original_paragraphs|tojson }};
+    const refContent = document.getElementById("reference-content");
 
     function showReference(index) {
-      if (references.length > index) {
-        contentBox.textContent = references[index];
+      if (originalParagraphs.length > index) {
+        refContent.textContent = originalParagraphs[index];
       } else {
-        contentBox.textContent = "找不到對應的原文段落。";
+        refContent.textContent = "⚠找不到對應原文。";
       }
     }
 
+    // 自動撐高 textarea
     const textarea = document.querySelector("textarea");
     textarea.addEventListener("input", () => {
       textarea.style.height = "auto";
