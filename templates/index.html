@@ -44,7 +44,7 @@
       flex: 1;
     }
 
-    .summary-col .paragraph-block {
+    .paragraph-block {
       background: #f1f1f1;
       padding: 12px;
       border-radius: 6px;
@@ -97,7 +97,7 @@
         <div class="reference-col">
           <h3>對應原文</h3>
           <div class="reference-box" id="reference-box">
-            <div id="reference-content">點選左側任一段摘要以查看對應原文。</div>
+            <div id="reference-content">點選左側任一段摘要查看原文。</div>
           </div>
         </div>
       </div>
@@ -106,15 +106,11 @@
   </div>
 
   <script>
-    const originalParagraphs = {{ original_paragraphs | tojson }};
-    const refContent = document.getElementById("reference-content");
+    const references = {{ original_paragraphs|tojson }};
+    const content = document.getElementById("reference-content");
 
     function showReference(index) {
-      if (originalParagraphs.length > index) {
-        refContent.textContent = originalParagraphs[index];
-      } else {
-        refContent.textContent = "找不到對應原文。";
-      }
+      content.textContent = references[index] || "找不到對應的原文段落。";
     }
 
     // 自動撐高 textarea
@@ -123,6 +119,7 @@
       textarea.style.height = "auto";
       textarea.style.height = textarea.scrollHeight + "px";
     });
+
     window.addEventListener("DOMContentLoaded", () => {
       textarea.style.height = "auto";
       textarea.style.height = textarea.scrollHeight + "px";
