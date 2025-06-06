@@ -101,8 +101,8 @@
       <div class="original-text">
         <h3>原文：</h3>
         <div class="original-content">
-          {% for i, para in enumerate(original_paragraphs) %}
-            <p id="p{{ i+1 }}">{{ para }}</p>
+          {% for para in original_paragraphs %}
+            <p id="p{{ loop.index }}">{{ para }}</p>
           {% endfor %}
         </div>
       </div>
@@ -112,9 +112,9 @@
       <div class="summary-text">
         <h3>摘要：</h3>
         <div class="summary-content">
-          {% for i, sent in enumerate(summary.split("。")) %}
+          {% for sent in summary.split("。") %}
             {% if sent.strip() %}
-              <p>{{ sent }}。<a href="#p{{ i+1 }}">對照原文</a></p>
+              <p>{{ sent }}。<a href="#p{{ loop.index }}">{{ loop.index }}</a></p>
             {% endif %}
           {% endfor %}
         </div>
